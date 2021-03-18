@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31105.61
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yungching_T1", "Yungching_T1\Yungching_T1.csproj", "{76FBCC76-31B8-4664-8637-F7296FDD328A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Yungching_T1", "Yungching_T1\Yungching_T1.csproj", "{76FBCC76-31B8-4664-8637-F7296FDD328A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestDB", "TestDB\TestDB.csproj", "{1765179E-6D42-4721-84E1-87573C9953CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDB", "TestDB\TestDB.csproj", "{1765179E-6D42-4721-84E1-87573C9953CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yungching_T1Tests", "Yungching_T1Tests\Yungching_T1Tests.csproj", "{CBF2A863-6B03-4B4C-98F3-FC1A1F0B4961}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1765179E-6D42-4721-84E1-87573C9953CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1765179E-6D42-4721-84E1-87573C9953CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1765179E-6D42-4721-84E1-87573C9953CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBF2A863-6B03-4B4C-98F3-FC1A1F0B4961}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBF2A863-6B03-4B4C-98F3-FC1A1F0B4961}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBF2A863-6B03-4B4C-98F3-FC1A1F0B4961}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBF2A863-6B03-4B4C-98F3-FC1A1F0B4961}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
