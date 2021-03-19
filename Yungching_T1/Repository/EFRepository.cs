@@ -44,7 +44,7 @@ namespace Yungching_T1.Repository
         /// 取得Entity全部筆數的IQueryable。
         /// </summary>
         /// <returns>Entity全部筆數的IQueryable。</returns>
-        public IQueryable<TEntity> Reads()
+        public IQueryable<TEntity> ReadAll()
         {
             return Context.Set<TEntity>().AsQueryable();
         }

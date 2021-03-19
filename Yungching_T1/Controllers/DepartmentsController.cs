@@ -25,7 +25,7 @@ namespace Yungching_T1.Controllers
     [HttpGet]
     public ActionResult<IEnumerable<Department>> GetDepartment()
     {
-        return DB.GetRepository<Department>().Reads().ToList();
+        return DB.GetRepository<Department>().ReadAll().ToList();
     }
 
     // GET: api/Departments/5

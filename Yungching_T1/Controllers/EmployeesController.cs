@@ -22,7 +22,7 @@ namespace Yungching_T1.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<Employee>> GetEmployee()
         {
-            return DB.GetRepository<Employee>().Reads().ToList();
+            return DB.GetRepository<Employee>().ReadAll().ToList();
         }
 
         // GET: api/Employees/5

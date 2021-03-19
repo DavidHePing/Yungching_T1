@@ -26,7 +26,7 @@ namespace Yungching_T1.Repository
         /// 取得Entity全部筆數的IQueryable。
         /// </summary>
         /// <returns>Entity全部筆數的IQueryable。</returns>
-        IQueryable<T> Reads();
+        IQueryable<T> ReadAll();
 
         /// <summary>
         /// 更新一筆資料的內容。
