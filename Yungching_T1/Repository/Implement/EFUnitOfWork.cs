@@ -5,15 +5,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Yungching_T1.Repository.Interface;
 
-namespace Yungching_T1.Repository
+namespace Yungching_T1.Repository.Implement
 {
     public class EFUnitOfWork : IUnitOfWork
     {
         private readonly DbContext _context;
 
         private bool _disposed;
-        private Hashtable _repositories = new Hashtable();
+        private readonly Hashtable _repositories = new Hashtable();
 
         /// <summary>
         /// 設定此Unit of work(UOF)的Context。

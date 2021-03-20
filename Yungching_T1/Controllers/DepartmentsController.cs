@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Yungching_T1.Models;
 using Yungching_T1.Repository;
+using Yungching_T1.Repository.Implement;
+using Yungching_T1.Repository.Interface;
 
 namespace Yungching_T1.Controllers
 {

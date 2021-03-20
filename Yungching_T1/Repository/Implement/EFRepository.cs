@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Web;
+using Yungching_T1.Repository.Interface;
 
-namespace Yungching_T1.Repository
+namespace Yungching_T1.Repository.Implement
 {
     public class EFRepository<TEntity> : IRepository<TEntity>
     where TEntity : class

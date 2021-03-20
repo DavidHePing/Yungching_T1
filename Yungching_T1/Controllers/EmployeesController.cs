@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Yungching_T1.Models;
 using Yungching_T1.Repository;
+using Yungching_T1.Repository.Implement;
+using Yungching_T1.Repository.Interface;
+using Yungching_T1.Service.Interface;
 
 namespace Yungching_T1.Controllers
 {
