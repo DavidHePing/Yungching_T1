@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace Yungching_T1.Repository
+namespace Yungching_T1.Repository.Interface
 {
     public interface IUnitOfWork : IDisposable
     {

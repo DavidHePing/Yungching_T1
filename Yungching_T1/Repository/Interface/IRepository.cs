@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Yungching_T1.Repository
+namespace Yungching_T1.Repository.Interface
 {
     public interface IRepository<T>
     {
