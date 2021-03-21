@@ -20,28 +20,28 @@ namespace Yungching_T1.Controllers
 
     public DepartmentsController(Database1Context context)
     {
-        DB = new EFUnitOfWork(context);
+        DB = new Database1UnitOfWork(context);
     }
 
     // GET: api/Departments
     [HttpGet]
     public ActionResult<IEnumerable<Department>> GetDepartment()
     {
-        return DB.GetRepository<Department>().ReadAll().ToList();
+        return DB.GetRepository<DepartmentRepository>().ReadAll().ToList();
     }
 
     // GET: api/Departments/5
     [HttpGet("{id}")]
     public ActionResult<IEnumerable<Department>> GetDepartment(int id)
     {
-        var Department = DB.GetRepository<Department>().Read((x) => x.Id == id);
+        var Department = DB.GetRepository<DepartmentRepository>().Read((x) => x.Id == id);
 
         if (Department == null)
         {
             return NotFound();
         }
 
-        return Department;
+        return Department.ToList();
     }
 
     // PUT: api/Departments/5
@@ -55,7 +55,7 @@ namespace Yungching_T1.Controllers
             return BadRequest();
         }
 
-        DB.GetRepository<Department>().Update(Department);
+        DB.GetRepository<DepartmentRepository>().Update(Department);
 
         try
         {
@@ -82,7 +82,7 @@ namespace Yungching_T1.Controllers
     [HttpPost]
     public ActionResult<Department> PostDepartment(Department Department)
     {
-        DB.GetRepository<Department>().Create(Department);
+        DB.GetRepository<DepartmentRepository>().Create(Department);
         DB.Save();
 
         return CreatedAtAction("GetDepartment", new { id = Department.Id }, Department);
@@ -92,13 +92,13 @@ namespace Yungching_T1.Controllers
     [HttpDelete("{id}")]
     public ActionResult<Department> DeleteDepartment(int id)
     {
-        var Department = DB.GetRepository<Department>().Read((x) => x.Id == id)[0];
+        var Department = DB.GetRepository<DepartmentRepository>().Read((x) => x.Id == id).ToList()[0];
         if (Department == null)
         {
             return NotFound();
         }
 
-        DB.GetRepository<Department>().Delete(Department);
+        DB.GetRepository<DepartmentRepository>().Delete(Department);
         DB.Save();
 
         return Department;
@@ -106,7 +106,7 @@ namespace Yungching_T1.Controllers
 
     private bool DepartmentExists(int id)
     {
-        return DB.GetRepository<Department>().Read(e => e.Id == id).Any();
+        return DB.GetRepository<DepartmentRepository>().Read(e => e.Id == id).Any();
     }
 }
 }
