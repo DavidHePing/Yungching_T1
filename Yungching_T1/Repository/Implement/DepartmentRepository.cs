@@ -5,10 +5,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Yungching_T1.Models;
+using Yungching_T1.Repository.Interface;
 
 namespace Yungching_T1.Repository.Implement
 {
-    public class DepartmentRepository
+    public class DepartmentRepository: IDepartmentRepository
     {
         private readonly Database1Context Context;
         public DepartmentRepository(Database1Context context)
@@ -30,9 +31,9 @@ namespace Yungching_T1.Repository.Implement
         /// </summary>
         /// <param name="predicate">要取得的Where條件。</param>
         /// <returns>取得第一筆符合條件的內容。</returns>
-        public List<Department> Read(Expression<Func<Department, bool>> predicate)
+        public IQueryable<Department> Read(Expression<Func<Department, bool>> predicate)
         {
-            return Context.Set<Department>().Where(predicate).ToList();
+            return Context.Set<Department>().Where(predicate).AsQueryable();
         }
 
         /// <summary>

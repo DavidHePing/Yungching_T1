@@ -12,7 +12,9 @@ namespace Yungching_T1.Service.Implement
 {
     public class EmployeeService : IEmployeeService
     {
+        public EmployeeService()
+        { 
         
-
+        }
     }
 }

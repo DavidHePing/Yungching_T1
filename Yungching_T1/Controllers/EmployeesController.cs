@@ -7,6 +7,7 @@ using Yungching_T1.Repository;
 using Yungching_T1.Repository.Implement;
 using Yungching_T1.Repository.Interface;
 using Yungching_T1.Service.Interface;
+using Yungching_T1.ValueObject;
 
 namespace Yungching_T1.Controllers
 {
@@ -14,32 +15,32 @@ namespace Yungching_T1.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly IUnitOfWork DB;
+        private IUnitOfWork DB;
 
-        public EmployeesController(Database1Context context)
+        public EmployeesController(IUnitOfWork uow)
         {
-            DB = new EFUnitOfWork(context);
+            DB = uow;
         }
 
         // GET: api/Employees
         [HttpGet]
         public ActionResult<IEnumerable<Employee>> GetEmployee()
         {
-            return DB.GetRepository<Employee>().ReadAll().ToList();
+            return DB.GetRepository<EmployeeRepository>().ReadAll().ToList();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<Employee>> GetEmployee(int id)
         {
-            var employee = DB.GetRepository<Employee>().Read((x) => x.Id == id);
+            var employee = DB.GetRepository<EmployeeRepository>().Read((x) => x.Id == id);
 
             if (employee == null)
             {
                 return NotFound();
             }
 
-            return employee;
+            return employee.ToList();
         }
 
         // PUT: api/Employees/5
@@ -53,7 +54,7 @@ namespace Yungching_T1.Controllers
                 return BadRequest();
             }
 
-            DB.GetRepository<Employee>().Update(employee);
+            DB.GetRepository<EmployeeRepository>().Update(employee);
 
             try
             {
@@ -80,7 +81,7 @@ namespace Yungching_T1.Controllers
         [HttpPost]
         public ActionResult<Employee> PostEmployee(Employee employee)
         {
-            DB.GetRepository<Employee>().Create(employee);
+            DB.GetRepository<EmployeeRepository>().Create(employee);
             DB.Save();
 
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
@@ -90,13 +91,13 @@ namespace Yungching_T1.Controllers
         [HttpDelete("{id}")]
         public ActionResult<Employee> DeleteEmployee(int id)
         {
-            var employee = DB.GetRepository<Employee>().Read((x) => x.Id == id)[0];
+            var employee = DB.GetRepository<EmployeeRepository>().Read((x) => x.Id == id).ToList()[0];
             if (employee == null)
             {
                 return NotFound();
             }
 
-            DB.GetRepository<Employee>().Delete(employee);
+            DB.GetRepository<EmployeeRepository>().Delete(employee);
             DB.Save();
 
             return employee;
@@ -104,7 +105,7 @@ namespace Yungching_T1.Controllers
 
         private bool EmployeeExists(int id)
         {
-            return DB.GetRepository<Employee>().Read(e => e.Id == id).Any();
+            return DB.GetRepository<EmployeeRepository>().Read(e => e.Id == id).Any();
         }
     }
 }
