@@ -16,25 +16,27 @@ namespace Yungching_T1.Controllers
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
-        private readonly IUnitOfWork DB;
+        private readonly Database1Context DB;
+        private readonly IDepartmentRepository departmentRepo;
 
-    public DepartmentsController(Database1Context context)
-    {
-        DB = new Database1UnitOfWork(context);
-    }
+        public DepartmentsController(Database1Context db, IDepartmentRepository dep)
+        {
+            DB = db;
+            departmentRepo = dep;
+        }
 
     // GET: api/Departments
     [HttpGet]
     public ActionResult<IEnumerable<Department>> GetDepartment()
     {
-        return DB.GetRepository<DepartmentRepository>().ReadAll().ToList();
+        return departmentRepo.ReadAll().ToList();
     }
 
     // GET: api/Departments/5
     [HttpGet("{id}")]
     public ActionResult<IEnumerable<Department>> GetDepartment(int id)
     {
-        var Department = DB.GetRepository<DepartmentRepository>().Read((x) => x.Id == id);
+        var Department = departmentRepo.Read((x) => x.Id == id);
 
         if (Department == null)
         {
@@ -55,11 +57,11 @@ namespace Yungching_T1.Controllers
             return BadRequest();
         }
 
-        DB.GetRepository<DepartmentRepository>().Update(Department);
+        departmentRepo.Update(Department);
 
         try
         {
-            DB.Save();
+            DB.SaveChanges();
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -82,8 +84,8 @@ namespace Yungching_T1.Controllers
     [HttpPost]
     public ActionResult<Department> PostDepartment(Department Department)
     {
-        DB.GetRepository<DepartmentRepository>().Create(Department);
-        DB.Save();
+        departmentRepo.Create(Department);
+        DB.SaveChanges();
 
         return CreatedAtAction("GetDepartment", new { id = Department.Id }, Department);
     }
@@ -92,21 +94,21 @@ namespace Yungching_T1.Controllers
     [HttpDelete("{id}")]
     public ActionResult<Department> DeleteDepartment(int id)
     {
-        var Department = DB.GetRepository<DepartmentRepository>().Read((x) => x.Id == id).ToList()[0];
+        var Department = departmentRepo.Read((x) => x.Id == id).ToList()[0];
         if (Department == null)
         {
             return NotFound();
         }
 
-        DB.GetRepository<DepartmentRepository>().Delete(Department);
-        DB.Save();
+        departmentRepo.Delete(Department);
+        DB.SaveChanges();
 
         return Department;
     }
 
     private bool DepartmentExists(int id)
     {
-        return DB.GetRepository<DepartmentRepository>().Read(e => e.Id == id).Any();
+        return departmentRepo.Read(e => e.Id == id).Any();
     }
 }
 }

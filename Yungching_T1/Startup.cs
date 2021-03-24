@@ -35,6 +35,9 @@ namespace Yungching_T1
             //EF³s½u
             services.AddDbContext<Database1Context>(options => options.UseSqlServer(Configuration.GetConnectionString("RazorPagesMovieContext")));
 
+            //Repository
+            services.AddTransient<IEmployeeRepository, EmployeeRepository>();
+            services.AddTransient<IDepartmentRepository, DepartmentRepository>();
             //Uow
             services.AddTransient<IUnitOfWork, Database1UnitOfWork>();
         }
