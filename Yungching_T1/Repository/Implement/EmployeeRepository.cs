@@ -31,18 +31,34 @@ namespace Yungching_T1.Repository.Implement
         /// </summary>
         /// <param name="predicate">要取得的Where條件。</param>
         /// <returns>取得第一筆符合條件的內容。</returns>
-        public IQueryable<Employee> Read(Expression<Func<Employee, bool>> predicate)
+        public IQueryable<EmployeesInfo> Read(Expression<Func<EmployeesInfo, bool>> predicate)
         {
-            return Context.Set<Employee>().Where(predicate).AsQueryable();
+            return Context.Employee.Join(Context.Department, x => x.DepartmentId, y => y.Id,
+                (x, y) => new EmployeesInfo
+                {
+                    EmployeeID = x.Id,
+                    Name = x.Name,
+                    Age = x.Age,
+                    DepartmentID = y.Id,
+                    DepartmentName = y.Name
+                }).Where(predicate);
         }
 
         /// <summary>
         /// 取得Entity全部筆數的IQueryable。
         /// </summary>
         /// <returns>Entity全部筆數的IQueryable。</returns>
-        public IQueryable<Employee> ReadAll()
+        public IQueryable<EmployeesInfo> ReadAll()
         {
-            return Context.Set<Employee>().AsQueryable();
+            return Context.Employee.Join(Context.Department, x => x.DepartmentId, y => y.Id,
+                (x, y) => new EmployeesInfo
+                {
+                    EmployeeID = x.Id,
+                    Name = x.Name,
+                    Age = x.Age,
+                    DepartmentID = y.Id,
+                    DepartmentName = y.Name
+                }) ;
         }
 
         /// <summary>

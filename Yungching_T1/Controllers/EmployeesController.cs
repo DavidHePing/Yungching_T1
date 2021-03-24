@@ -15,25 +15,27 @@ namespace Yungching_T1.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private IUnitOfWork DB;
+        private readonly Database1Context DB;
+        private readonly IEmployeeRepository empRepo;
 
-        public EmployeesController(IUnitOfWork uow)
+        public EmployeesController(Database1Context db, IEmployeeRepository emp)
         {
-            DB = uow;
+            DB = db;
+            empRepo = emp;
         }
 
         // GET: api/Employees
         [HttpGet]
-        public ActionResult<IEnumerable<Employee>> GetEmployee()
+        public ActionResult<IEnumerable<EmployeesInfo>> GetEmployee()
         {
-            return DB.GetRepository<EmployeeRepository>().ReadAll().ToList();
+            return empRepo.ReadAll().ToList();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<Employee>> GetEmployee(int id)
+        public ActionResult<IEnumerable<EmployeesInfo>> GetEmployee(int id)
         {
-            var employee = DB.GetRepository<EmployeeRepository>().Read((x) => x.Id == id);
+            var employee = empRepo.Read((x) => x.EmployeeID == id);
 
             if (employee == null)
             {
@@ -54,11 +56,11 @@ namespace Yungching_T1.Controllers
                 return BadRequest();
             }
 
-            DB.GetRepository<EmployeeRepository>().Update(employee);
+            empRepo.Update(employee);
 
             try
             {
-                DB.Save();
+                DB.SaveChanges();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -81,8 +83,8 @@ namespace Yungching_T1.Controllers
         [HttpPost]
         public ActionResult<Employee> PostEmployee(Employee employee)
         {
-            DB.GetRepository<EmployeeRepository>().Create(employee);
-            DB.Save();
+            empRepo.Create(employee);
+            DB.SaveChanges();
 
             return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
         }
@@ -91,21 +93,28 @@ namespace Yungching_T1.Controllers
         [HttpDelete("{id}")]
         public ActionResult<Employee> DeleteEmployee(int id)
         {
-            var employee = DB.GetRepository<EmployeeRepository>().Read((x) => x.Id == id).ToList()[0];
+            var employee = empRepo.Read((x) => x.EmployeeID == id).ToList()
+                .Select((x) => new Employee() 
+                {
+                    Id = x.EmployeeID,
+                    Name = x.Name,
+                    Age = x.Age,
+                    DepartmentId = x.DepartmentID
+                }).ToList()[0];
             if (employee == null)
             {
                 return NotFound();
             }
 
-            DB.GetRepository<EmployeeRepository>().Delete(employee);
-            DB.Save();
+            empRepo.Delete(employee);
+            DB.SaveChanges();
 
             return employee;
         }
 
         private bool EmployeeExists(int id)
         {
-            return DB.GetRepository<EmployeeRepository>().Read(e => e.Id == id).Any();
+            return empRepo.Read(e => e.EmployeeID == id).Any();
         }
     }
 }

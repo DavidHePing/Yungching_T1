@@ -11,8 +11,8 @@ namespace Yungching_T1.Repository.Interface
     public interface IEmployeeRepository
     {
         void Create(Employee entity);
-        IQueryable<Employee> Read(Expression<Func<Employee, bool>> predicate);
-        IQueryable<Employee> ReadAll();
+        IQueryable<EmployeesInfo> Read(Expression<Func<EmployeesInfo, bool>> predicate);
+        IQueryable<EmployeesInfo> ReadAll();
         void Update(Employee entity);
         void Update(Employee entity, Expression<Func<Employee, object>>[] updateProperties);
         void Delete(Employee entity);
