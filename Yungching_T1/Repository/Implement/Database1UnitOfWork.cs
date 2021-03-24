@@ -1,35 +1,40 @@
-﻿using Yungching_T1.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Yungching_T1.Models;
+using Yungching_T1.Repository.Interface;
 
-namespace Yungching_T1.Repository
+namespace Yungching_T1.Repository.Implement
 {
-    public class EFUnitOfWork : IUnitOfWork
+    public class Database1UnitOfWork : IUnitOfWork
     {
-        private readonly DbContext _context;
-
+        private readonly Database1Context _context;
+        private Hashtable _repositories;
         private bool _disposed;
-        private Hashtable _repositories = new Hashtable();
 
         /// <summary>
         /// 設定此Unit of work(UOF)的Context。
         /// </summary>
         /// <param name="context">設定UOF的context</param>
-        public EFUnitOfWork(DbContext context)
+        public Database1UnitOfWork(Database1Context context)
         {
             _context = context;
+            _repositories = new Hashtable
+            {
+                { typeof(EmployeeRepository), new EmployeeRepository(context) },
+                { typeof(DepartmentRepository), new DepartmentRepository(context) }
+            };
         }
 
         /// <summary>
         /// 儲存所有異動。
         /// </summary>
-        public void Save()
+        public int Save()
         {
-            _context.SaveChanges();
+            return _context.SaveChanges();
         }
 
         /// <summary>
@@ -65,13 +70,9 @@ namespace Yungching_T1.Repository
         /// </summary>
         /// <typeparam name="T">此Context裡面的Entity Type</typeparam>
         /// <returns>Entity的Repository</returns>
-        public IRepository<T> GetRepository<T>() where T : class
-        {
-            if (!_repositories.Contains(typeof(T)))
-            {
-                _repositories.Add(typeof(T), new EFRepository<T>(_context));
-            }
-            return (IRepository<T>)_repositories[typeof(T)];
+        public T GetRepository<T>() where T : class
+        {           
+            return (T)_repositories[typeof(T)];
         }
     }
 }

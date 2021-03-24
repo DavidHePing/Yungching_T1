@@ -3,31 +3,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Web;
+using System.Threading.Tasks;
+using Yungching_T1.Models;
+using Yungching_T1.Repository.Interface;
 
-namespace Yungching_T1.Repository
+namespace Yungching_T1.Repository.Implement
 {
-    public class EFRepository<TEntity> : IRepository<TEntity>
-    where TEntity : class
+    public class DepartmentRepository: IDepartmentRepository
     {
-        private DbContext Context { get; set; }
-
-        /// <summary>
-        /// 建構EF一個Entity的Repository，需傳入此Entity的Context。
-        /// </summary>
-        /// <param name="inContext">Entity所在的Context</param>
-        public EFRepository(DbContext inContext)
+        private readonly Database1Context Context;
+        public DepartmentRepository(Database1Context context)
         {
-            Context = inContext;
+            Context = context;
         }
 
         /// <summary>
         /// 新增一筆資料到資料庫。
         /// </summary>
         /// <param name="entity">要新增到資料的庫的Entity</param>
-        public void Create(TEntity entity)
+        public void Create(Department entity)
         {
-            Context.Set<TEntity>().Add(entity);
+            Context.Set<Department>().Add(entity);
         }
 
         /// <summary>
@@ -35,27 +31,27 @@ namespace Yungching_T1.Repository
         /// </summary>
         /// <param name="predicate">要取得的Where條件。</param>
         /// <returns>取得第一筆符合條件的內容。</returns>
-        public List<TEntity> Read(Expression<Func<TEntity, bool>> predicate)
+        public IQueryable<Department> Read(Expression<Func<Department, bool>> predicate)
         {
-            return Context.Set<TEntity>().Where(predicate).ToList();
+            return Context.Set<Department>().Where(predicate).AsQueryable();
         }
 
         /// <summary>
         /// 取得Entity全部筆數的IQueryable。
         /// </summary>
         /// <returns>Entity全部筆數的IQueryable。</returns>
-        public IQueryable<TEntity> ReadAll()
+        public IQueryable<Department> ReadAll()
         {
-            return Context.Set<TEntity>().AsQueryable();
+            return Context.Set<Department>().AsQueryable();
         }
 
         /// <summary>
         /// 更新一筆Entity內容。
         /// </summary>
         /// <param name="entity">要更新的內容</param>
-        public void Update(TEntity entity)
+        public void Update(Department entity)
         {
-            Context.Entry<TEntity>(entity).State = EntityState.Modified;
+            Context.Entry<Department>(entity).State = EntityState.Modified;
         }
 
         /// <summary>
@@ -63,15 +59,15 @@ namespace Yungching_T1.Repository
         /// </summary>
         /// <param name="entity">要更新的內容。</param>
         /// <param name="updateProperties">需要更新的欄位。</param>
-        public void Update(TEntity entity, Expression<Func<TEntity, object>>[] updateProperties)
+        public void Update(Department entity, Expression<Func<Department, object>>[] updateProperties)
         {
-            Context.Entry<TEntity>(entity).State = EntityState.Unchanged;
+            Context.Entry<Department>(entity).State = EntityState.Unchanged;
 
             if (updateProperties != null)
             {
                 foreach (var property in updateProperties)
                 {
-                    Context.Entry<TEntity>(entity).Property(property).IsModified = true;
+                    Context.Entry<Department>(entity).Property(property).IsModified = true;
                 }
             }
         }
@@ -80,9 +76,9 @@ namespace Yungching_T1.Repository
         /// 刪除一筆資料內容。
         /// </summary>
         /// <param name="entity">要被刪除的Entity。</param>
-        public void Delete(TEntity entity)
+        public void Delete(Department entity)
         {
-            Context.Entry<TEntity>(entity).State = EntityState.Deleted;
+            Context.Entry<Department>(entity).State = EntityState.Deleted;
         }
     }
 }
