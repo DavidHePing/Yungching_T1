@@ -6,6 +6,7 @@ using Yungching_T1.Models;
 using Yungching_T1.Repository;
 using Yungching_T1.Repository.Implement;
 using Yungching_T1.Repository.Interface;
+using Yungching_T1.Service.Implement;
 using Yungching_T1.Service.Interface;
 using Yungching_T1.ValueObject;
 
@@ -15,27 +16,32 @@ namespace Yungching_T1.Controllers
     [ApiController]
     public class EmployeesController : ControllerBase
     {
-        private readonly Database1Context DB;
-        private readonly IEmployeeRepository empRepo;
+        private readonly IEmployeeService EmpService;
 
-        public EmployeesController(Database1Context db, IEmployeeRepository emp)
+        private readonly Dictionary<DBStateKey, string> DBState = new Dictionary<DBStateKey, string>();
+
+        public EmployeesController(IEmployeeService employeeService)
         {
-            DB = db;
-            empRepo = emp;
+            EmpService = employeeService;
+
+            DBState.Add(DBStateKey.Success, "Update Success!!");
+            DBState.Add(DBStateKey.IdIsNotExist, "Employee's Id is not exist");
+            DBState.Add(DBStateKey.IdIsDifferent, "Id and Employee's Id is different");
+            DBState.Add((DBStateKey.Fail), "Update Failure!!");
         }
 
         // GET: api/Employees
         [HttpGet]
         public ActionResult<IEnumerable<EmployeesInfo>> GetEmployee()
         {
-            return empRepo.ReadAll().ToList();
+            return EmpService.GetEmployee().ToList();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
         public ActionResult<IEnumerable<EmployeesInfo>> GetEmployee(int id)
         {
-            var employee = empRepo.Read((x) => x.EmployeeID == id);
+            IQueryable<EmployeesInfo> employee = EmpService.GetEmployeeById(id); 
 
             if (employee == null)
             {
@@ -51,70 +57,38 @@ namespace Yungching_T1.Controllers
         [HttpPut("{id}")]
         public IActionResult PutEmployee(int id, Employee employee)
         {
-            if (id != employee.Id)
-            {
-                return BadRequest();
-            }
+            DBStateKey updateState = EmpService.UpdateEmployee(id, employee);
 
-            empRepo.Update(employee);
+            if (updateState != DBStateKey.Success)
+                return StatusCode(500, DBState[updateState]);
 
-            try
-            {
-                DB.SaveChanges();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!EmployeeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return Ok(DBState[updateState]);
         }
 
         // POST: api/Employees
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public ActionResult<Employee> PostEmployee(Employee employee)
+        public IActionResult PostEmployee(Employee employee)
         {
-            empRepo.Create(employee);
-            DB.SaveChanges();
+            DBStateKey updateState = EmpService.AddNewEmployee(employee);
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+            if (updateState != DBStateKey.Success)
+                return StatusCode(500, DBState[updateState]);
+
+            return Ok(DBState[updateState]);
         }
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
         public ActionResult<Employee> DeleteEmployee(int id)
         {
-            var employee = empRepo.Read((x) => x.EmployeeID == id).ToList()
-                .Select((x) => new Employee() 
-                {
-                    Id = x.EmployeeID,
-                    Name = x.Name,
-                    Age = x.Age,
-                    DepartmentId = x.DepartmentID
-                }).ToList()[0];
-            if (employee == null)
-            {
-                return NotFound();
-            }
+            DBStateKey updateState = EmpService.DeleteEmployee(id);
 
-            empRepo.Delete(employee);
-            DB.SaveChanges();
+            if (updateState != DBStateKey.Success)
+                return StatusCode(500, DBState[updateState]);
 
-            return employee;
-        }
-
-        private bool EmployeeExists(int id)
-        {
-            return empRepo.Read(e => e.EmployeeID == id).Any();
+            return Ok(DBState[updateState]);
         }
     }
 }

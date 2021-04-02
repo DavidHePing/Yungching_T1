@@ -30,6 +30,9 @@ namespace Yungching_T1
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //single file
+            //跨平台,參考抽掉
+
             services.AddControllers();
 
             //EF連線
@@ -38,8 +41,9 @@ namespace Yungching_T1
             //Repository
             services.AddTransient<IEmployeeRepository, EmployeeRepository>();
             services.AddTransient<IDepartmentRepository, DepartmentRepository>();
-            //Uow
-            services.AddTransient<IUnitOfWork, Database1UnitOfWork>();
+
+            //Service
+            services.AddTransient<IEmployeeService, EmployeeService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
