@@ -14,10 +14,10 @@ namespace Yungching_T1.Service.Interface
 
         IQueryable<EmployeesInfo> GetEmployeeById(int id);
 
-        DBStateKey UpdateEmployee(int id, Employee employee);
+        Task<DBStateKey> UpdateEmployee(int id, Employee employee);
 
-        DBStateKey AddNewEmployee(Employee employee);
+        Task<DBStateKey> AddNewEmployee(Employee employee);
 
-        DBStateKey DeleteEmployee(int id);
+        Task<DBStateKey> DeleteEmployee(int id);
     }
 }

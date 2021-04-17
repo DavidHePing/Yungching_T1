@@ -48,14 +48,14 @@ namespace Yungching_T1.Service.Implement
             return employee;
         }
         
-        public DBStateKey UpdateEmployee(int id, Employee employee)
+        public async Task<DBStateKey> UpdateEmployee(int id, Employee employee)
         {
             if (id != employee.Id)
             {
                 return DBStateKey.IdIsDifferent;
             }
 
-            if (!EmployeeExists(id))
+            if (!await EmployeeExists(id))
             {
                 return DBStateKey.IdIsNotExist;
             }
@@ -64,7 +64,7 @@ namespace Yungching_T1.Service.Implement
 
             try
             {
-                DB.SaveChanges();
+                await DB.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException exception)
             {               
@@ -74,17 +74,18 @@ namespace Yungching_T1.Service.Implement
             return DBStateKey.Success;
         }
         
-        public DBStateKey AddNewEmployee(Employee employee)
+        public async Task<DBStateKey> AddNewEmployee(Employee employee)
         {
             EmpRepo.Create(employee);
-            DB.SaveChanges();
+            await DB.SaveChangesAsync();
 
             return DBStateKey.Success;
         }
       
-        public DBStateKey DeleteEmployee(int id)
+        public async Task<DBStateKey> DeleteEmployee(int id)
         {
-            Employee employee = EmpRepo.Read((x) => x.EmployeeID == id).ToList()
+            IEnumerable<EmployeesInfo> empInfo = await EmpRepo.Read((x) => x.EmployeeID == id).ToListAsync();
+            Employee employee = empInfo
                 .Select((x) => new Employee()
                 {
                     Id = x.EmployeeID,
@@ -104,9 +105,9 @@ namespace Yungching_T1.Service.Implement
             return DBStateKey.Success;
         }
 
-        private bool EmployeeExists(int id)
+        private async Task<bool> EmployeeExists(int id)
         {
-            return EmpRepo.Read(e => e.EmployeeID == id).Any();
+            return await EmpRepo.Read(e => e.EmployeeID == id).AnyAsync();
         }
     }
 }

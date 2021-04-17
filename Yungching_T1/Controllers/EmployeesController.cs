@@ -2,10 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Yungching_T1.Models;
-using Yungching_T1.Repository;
-using Yungching_T1.Repository.Implement;
-using Yungching_T1.Repository.Interface;
 using Yungching_T1.Service.Implement;
 using Yungching_T1.Service.Interface;
 using Yungching_T1.ValueObject;
@@ -32,32 +30,33 @@ namespace Yungching_T1.Controllers
 
         // GET: api/Employees
         [HttpGet]
-        public ActionResult<IEnumerable<EmployeesInfo>> GetEmployee()
+        public async ValueTask<IEnumerable<EmployeesInfo>> GetEmployee()
         {
-            return EmpService.GetEmployee().ToList();
+            return await EmpService.GetEmployee().ToListAsync();
         }
 
         // GET: api/Employees/5
         [HttpGet("{id}")]
-        public ActionResult<IEnumerable<EmployeesInfo>> GetEmployee(int id)
+        public async Task<ActionResult<IEnumerable<EmployeesInfo>>> GetEmployee(int id)
         {
-            IQueryable<EmployeesInfo> employee = EmpService.GetEmployeeById(id); 
+            IQueryable<EmployeesInfo> employeeQuery = EmpService.GetEmployeeById(id);
+            List<EmployeesInfo> employees = await employeeQuery.ToListAsync();
 
-            if (employee == null)
+            if (!employees.Any())
             {
                 return NotFound();
             }
 
-            return employee.ToList();
+            return employees;
         }
 
         // PUT: api/Employees/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public IActionResult PutEmployee(int id, Employee employee)
+        public async Task<IActionResult> PutEmployeeAsync(int id, Employee employee)
         {
-            DBStateKey updateState = EmpService.UpdateEmployee(id, employee);
+            DBStateKey updateState = await EmpService.UpdateEmployee(id, employee);
 
             if (updateState != DBStateKey.Success)
                 return StatusCode(500, DBState[updateState]);
@@ -69,9 +68,9 @@ namespace Yungching_T1.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public IActionResult PostEmployee(Employee employee)
+        public async Task<IActionResult> PostEmployee(Employee employee)
         {
-            DBStateKey updateState = EmpService.AddNewEmployee(employee);
+            DBStateKey updateState = await EmpService.AddNewEmployee(employee);
 
             if (updateState != DBStateKey.Success)
                 return StatusCode(500, DBState[updateState]);
@@ -81,9 +80,9 @@ namespace Yungching_T1.Controllers
 
         // DELETE: api/Employees/5
         [HttpDelete("{id}")]
-        public ActionResult<Employee> DeleteEmployee(int id)
+        public async Task<ActionResult<Employee>> DeleteEmployee(int id)
         {
-            DBStateKey updateState = EmpService.DeleteEmployee(id);
+            DBStateKey updateState = await EmpService.DeleteEmployee(id);
 
             if (updateState != DBStateKey.Success)
                 return StatusCode(500, DBState[updateState]);

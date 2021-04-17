@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Yungching_T1.Extention;
 using Yungching_T1.Models;
 using Yungching_T1.Repository.Interface;
 
@@ -25,11 +26,17 @@ namespace Yungching_T1.Controllers
         }
 
         [HttpGet]
-        public void Test()
+        public DateTime Test()
         {
-            empRepo.Create(new Employee() {Name = "testEmp", DepartmentId = 1 });
-            departmentRepo.Create(new Department() { Name = "testEmp"});
-            DB.SaveChanges();
+            //empRepo.Create(new Employee() {Name = "testEmp", DepartmentId = 1 });
+            //departmentRepo.Create(new Department() { Name = "testEmp"});
+            //DB.SaveChanges();
+
+            DateTime birthday = DateTime.Parse("1995/06/13");
+
+            return birthday.ConvertToTWDateTime().ConvertAnnoDominaiToTWDateTime();
         }
+
+       
     }
 }
